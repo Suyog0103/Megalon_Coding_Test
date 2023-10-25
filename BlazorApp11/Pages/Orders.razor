@@ -1,0 +1,63 @@
+﻿@inject HttpClient httpClient
+@page "/orders/{customerId}"
+
+<h3>Orders</h3>
+
+<p><strong>Customer ID:</strong> @customerId</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Item Name</th>
+            <th>Item Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (orders == null)
+        {
+            <tr>
+                <td colspan="3">Loading...</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.OrderID</td>
+                    <td>@order.ItemName</td>
+                    <td>@order.ItemPrice.ToString("C")</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public class Order
+    {
+        public int OrderID { get; set; }
+        public string ItemName { get; set; }
+        public decimal ItemPrice { get; set; }
+    }
+
+    [Parameter]
+    public String customerId { get; set; }
+
+    private List<Order> orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            
+            var response = await httpClient.GetFromJsonAsync<List<Order>>($"http://localhost:5084/api/orders/{customerId}");
+            orders = response;
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+}

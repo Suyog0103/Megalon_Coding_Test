@@ -1,0 +1,65 @@
+﻿@inject HttpClient httpClient
+@page "/Customer1"
+
+<h3>Customers</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date of Birth</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (customers == null)
+        {
+            <tr>
+                <td colspan="5">Loading...</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var customer in customers)
+            {
+                <tr>
+                    <td>@customer.CustomerId</td>
+                    <td>@customer.FirstName</td>
+                    <td>@customer.LastName</td>
+                    <td>@customer.DOB.ToShortDateString()</td>
+                    <td>
+                        <a href="orders/@customer.CustomerId">View Orders</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public class Customer
+    {
+        public Guid CustomerId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime DOB { get; set; }
+    }
+
+    private List<Customer> customers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            
+            var response = await httpClient.GetFromJsonAsync<List<Customer>>("http://localhost:5084/api/customers");
+            customers = response;
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+}
