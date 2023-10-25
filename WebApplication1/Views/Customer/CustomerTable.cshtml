@@ -1,0 +1,27 @@
+﻿@model List<Megalon.Models.Customer>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date of Birth</th>
+            <th>Action</th> 
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.CustomerId</td>
+                <td>@customer.FirstName</td>
+                <td>@customer.LastName</td>
+                <td>@customer.DOB.ToShortDateString()</td>
+                <td>
+                    <a asp-controller="Orders" asp-action="GetOrders" asp-route-customerId="@customer.CustomerId">View Orders</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
